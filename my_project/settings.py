@@ -198,9 +198,9 @@ STATIC_URL = '/static/'
 # OPENAI_API_KEY="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"
 
 # Load environment variables from .env file
-load_dotenv()
+# load_dotenv()
 
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 
 # DEBUG = True
 
