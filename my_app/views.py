@@ -112,8 +112,8 @@ def list_communities(request):
 # @permission_classes([IsAuthenticated])
 # @login_required
 @csrf_exempt
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
 def create_community(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -126,7 +126,7 @@ def create_community(request):
 
 
 @csrf_exempt
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 @api_view(['GET'])
 def showRecipe(request):
     if request.method == 'GET':
