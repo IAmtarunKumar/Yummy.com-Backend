@@ -22,6 +22,9 @@ from .models import Community, Recipe, User
 # convert queryset to json
 from .serializer import CommunitySerializer, RecipeSerializer
 
+
+
+
 # register
 
 
@@ -112,8 +115,6 @@ def list_communities(request):
 # @permission_classes([IsAuthenticated])
 # @login_required
 @csrf_exempt
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
 def create_community(request):
     if request.method == 'POST':
         data = json.loads(request.body)
