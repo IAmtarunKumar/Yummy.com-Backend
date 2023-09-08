@@ -104,20 +104,11 @@ DATABASES = {
 }
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'yummy',
-#         'USER': 'root',
-#         'PASSWORD': 'fw22_0086',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#     }
-# }
-
 database_url = os.environ.get("DATABASE_URL")
 
-DATABASES['default'] = dj_database_url.parse(database_url)
+# DATABASES['default'] = dj_database_url.parse(database_url)
+if database_url:
+    DATABASES['default'] = dj_database_url.parse(database_url)
 
 # DATABASES['default'] = dj_database_url.parse("postgres://yummy_database_user:IyCKuWBOVXprihzFal50k83kwcf1aIEq@dpg-cjtj1095mpss73fco3i0-a.oregon-postgres.render.com/yummy_database")
 
