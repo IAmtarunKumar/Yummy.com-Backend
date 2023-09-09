@@ -1,7 +1,5 @@
 # tasks/views.py
-from django.contrib.auth import authenticate, login, logout 
-
-
+from django.contrib.auth import authenticate, login, logout
 
 from django.contrib.auth.models import User
 from django.http import JsonResponse
@@ -34,8 +32,6 @@ def user_register(request):
             username = data.get('username')
             password = data.get('password')
 
-        
-
             if not email or not username or not password:
                 return JsonResponse({'error': 'Missing required fields'}, status=400)
 
@@ -44,7 +40,8 @@ def user_register(request):
                 return JsonResponse({'error': 'Username or email already exists'}, status=400)
 
             # Create a new custom user
-            user = User.objects.create(email=email,username=username, password=password)
+            user = User.objects.create(
+                email=email, username=username, password=password)
             # Set the user's password
             user.save()  # Save the user object
 
@@ -54,6 +51,7 @@ def user_register(request):
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 # login
+
 @csrf_exempt
 def user_login(request):
     if request.method == 'POST':
@@ -112,8 +110,8 @@ def list_communities(request):
 # @permission_classes([IsAuthenticated])
 # @login_required
 @csrf_exempt
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def create_community(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -126,7 +124,7 @@ def create_community(request):
 
 
 @csrf_exempt
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 @api_view(['GET'])
 def showRecipe(request):
     if request.method == 'GET':
@@ -191,15 +189,18 @@ def chat_gpt(request):
 
 
 
-
-
 @csrf_exempt
-def demo(request):
+def custom_recipe(request):
     if request.method == 'POST':
         # Parse JSON data from the request body
         try:
             data = json.loads(request.body)
-            keyword = data.get('keyword')
+            cuisines = data.get('cuisines')
+            ingredients_not = data.get('ingredients_not')
+            skills = data.get('skills')
+            allergies = data.get('allergies')
+            follow_diets = data.get('follow_diets')
+
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON data'}, status=400)
         # Set up OpenAI API key
@@ -210,8 +211,8 @@ def demo(request):
             response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=[{ "role": "user",
-                            "content": f'Create 4 recipes in JSON format using the keyword "{keyword}". Each recipe should have the following structure: "title": "Recipe Title", "ingredients": "Array of ingredients ", "instructions": "Array of Cooking steps instructions"  output in json format only.' + "Example : [{} , {} , {}]" }
-  ])
+                         "content": f"Create 5 recipes in JSON format based on your preferences. You mentioned the following: - Cuisines: {cuisines} - Ingredients to avoid: {ingredients_not} - Cooking skills: {skills} - Allergies: {allergies} - Specific diets: {follow_diets} For each recipe, provide the following structure:  - 'title': 'Recipe Title'  - 'ingredients': 'Array of ingredients ' - 'instructions': 'Array of cooking instructions steps' Output the recipes in JSON format as a list of dictionaries." + " Example: [{}, {}, {}, {}, {}]"
+ } ])
             if response.choices:
                 data=response.choices[0].message.content
                 new_data = json.loads(data)
@@ -221,46 +222,3 @@ def demo(request):
             return JsonResponse({'error': str(e)}, status=500)
         return JsonResponse({'gpt3_output': new_data}, status=201)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
-
-
-
-
-
-
-# @csrf_exempt
-# def custom_recipe(request):
-#     if request.method == 'POST':
-#         # Parse JSON data from the request body
-#         try:
-#             data = json.loads(request.body)
-
-            
-#             cuisines = data.get('cuisines')
-#             ingredients_not = data.get('ingredients_not')
-#             skills = data.get('skills')
-#             allergies = data.get('allergies')
-#             follow_diets = data.get('follow_diets')
-
-#         except json.JSONDecodeError:
-#             return JsonResponse({'error': 'Invalid JSON data'}, status=400)
-#         # Set up OpenAI API key
-#         openai.api_key = settings.OPENAI_API_KEY
-#         # Make a request to OpenAI GPT-3 API
-#         try:
-           
-#             response = openai.ChatCompletion.create(
-#                 model="gpt-3.5-turbo",
-#                 messages=[{ "role": "user",
-#                          "content": f"Create 5 recipes in JSON format based on your preferences. You mentioned the following: - Cuisines: {cuisines} - Ingredients to avoid: {ingredients_not} - Cooking skills: {skills} - Allergies: {allergies} - Specific diets: {follow_diets} For each recipe, provide the following structure:  - 'title': 'Recipe Title'  - 'ingredients': 'Array of ingredients ' - 'instructions': 'Array of cooking instructions steps' Output the recipes in JSON format as a list of dictionaries." + " Example: [{}, {}, {}, {}, {}]" }
-#   ])
-#             if response.choices:
-#                 data=response.choices[0].message.content
-#                 print(data)
-#                 new_data = json.loads(data)
-#             else:
-#                 return JsonResponse({'error': 'No response from GPT-3'}, status=500)
-#         except Exception as e:
-#             return JsonResponse({'error': str(e)}, status=500)
-#         return JsonResponse({'gpt3_output': new_data}, status=201)
-#     return JsonResponse({'error': 'Invalid request method'}, status=405)
-
