@@ -1,6 +1,5 @@
 # tasks/views.py
-from django.contrib.auth import authenticate, login, logout 
-
+from django.contrib.auth import authenticate, login, logout
 
 
 from django.contrib.auth.models import User
@@ -34,8 +33,6 @@ def user_register(request):
             username = data.get('username')
             password = data.get('password')
 
-        
-
             if not email or not username or not password:
                 return JsonResponse({'error': 'Missing required fields'}, status=400)
 
@@ -44,7 +41,8 @@ def user_register(request):
                 return JsonResponse({'error': 'Username or email already exists'}, status=400)
 
             # Create a new custom user
-            user = User.objects.create(email=email,username=username, password=password)
+            user = User.objects.create(
+                email=email, username=username, password=password)
             # Set the user's password
             user.save()  # Save the user object
 
@@ -55,6 +53,7 @@ def user_register(request):
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 # login
 
+
 @csrf_exempt
 def user_login(request):
     if request.method == 'POST':
@@ -62,19 +61,17 @@ def user_login(request):
         username = data['username']
         password = data['password']
         # user = authenticate(request, username=username, password=password)
-        user=User.objects.filter(username=username).exists() and User.objects.filter(password=password).exists()
+        user = User.objects.filter(username=username).exists(
+        ) and User.objects.filter(password=password).exists()
         if user:
             # login(request, user)
             # Generate or retrieve an existing token for the user
             # token, created = Token.objects.get_or_create(user=user)
             # return JsonResponse({'message': 'Login successful', 'token': token.key , "username":username})
-            return JsonResponse({'message': 'Login successful', 'token': "login" , "username":username})
+            return JsonResponse({'message': 'Login successful', 'token': "login", "username": username})
 
         else:
             return JsonResponse({'message': 'Invalid credentials'}, status=401)
-
-
-
 
 
 # Logout Route
@@ -157,10 +154,11 @@ def addRecipe(request):
             return JsonResponse({'message': 'User does not exist'}, status=400)
 
         # Create and save the Recipe instance with the valid user_id
-        recipe = Recipe(user=user, title=title, ingredients=ingredients, instructions=instructions)
+        recipe = Recipe(user=user, title=title,
+                        ingredients=ingredients, instructions=instructions)
         recipe.save()
 
-        return JsonResponse({'message': 'Recipe posted successfully'}, status=201 )
+        return JsonResponse({'message': 'Recipe posted successfully'}, status=201)
 
     return JsonResponse({'message': 'Invalid request method'}, status=400)
 
@@ -178,14 +176,14 @@ def chat_gpt(request):
         openai.api_key = settings.OPENAI_API_KEY
         # Make a request to OpenAI GPT-3 API
         try:
-           
+
             response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
-                messages=[{ "role": "user",
-                            "content": f'Create 4 recipes in JSON format using the keyword "{keyword}". Each recipe should have the following structure: "title": "Recipe Title", "ingredients": "Array of ingredients ", "instructions": "Array of Cooking steps instructions"  output in json format only.' + "Example : [{} , {} , {}]" }
-  ])
+                messages=[{"role": "user",
+                           "content": f'Create 3 recipes in JSON format using the keyword "{keyword}". Each recipe should have the following structure: "title": "Recipe Title", "ingredients": "Array of ingredients ", "instructions": "Array of Cooking steps instructions"  output in json format only.' + "Example : [{} , {} , {}]"}
+                          ])
             if response.choices:
-                data=response.choices[0].message.content
+                data = response.choices[0].message.content
                 new_data = json.loads(data)
             else:
                 return JsonResponse({'error': 'No response from GPT-3'}, status=500)
@@ -193,7 +191,6 @@ def chat_gpt(request):
             return JsonResponse({'error': str(e)}, status=500)
         return JsonResponse({'gpt3_output': new_data}, status=201)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
-
 
 
 @csrf_exempt
@@ -214,14 +211,14 @@ def custom_recipe(request):
         openai.api_key = settings.OPENAI_API_KEY
         # Make a request to OpenAI GPT-3 API
         try:
-           
+
             response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
-                messages=[{ "role": "user",
-                         "content": f"Create 3 recipes in JSON format based on your preferences. You mentioned the following: - Cuisines: {cuisines} - Ingredients to avoid: {ingredients_not} - Cooking skills: {skills} - Allergies: {allergies} - Specific diets: {follow_diets} For each recipe, provide the following structure:  - 'title': 'Recipe Title'  - 'ingredients': 'Array of ingredients ' - 'instructions': 'Array of cooking instructions steps' Output the recipes in JSON format as a list of dictionaries." + " Example: [{}, {}, {}, {}, {}]"
- } ])
+                messages=[{"role": "user",
+                           "content": f"Create 3 recipes in JSON format based on your preferences. You mentioned the following: - Cuisines: {cuisines} - Ingredients to avoid: {ingredients_not} - Cooking skills: {skills} - Allergies: {allergies} - Specific diets: {follow_diets} For each recipe, provide the following structure:  - 'title': 'Recipe Title'  - 'ingredients': 'Array of ingredients ' - 'instructions': 'Array of cooking instructions steps' Output the recipes in JSON format as a list of dictionaries." + " Example: [{}, {}, {}, {}, {}]"
+                           }])
             if response.choices:
-                data=response.choices[0].message.content
+                data = response.choices[0].message.content
                 new_data = json.loads(data)
             else:
                 return JsonResponse({'error': 'No response from GPT-3'}, status=500)
