@@ -1,5 +1,7 @@
 # tasks/views.py
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout 
+
+
 
 from django.contrib.auth.models import User
 from django.http import JsonResponse
@@ -32,6 +34,8 @@ def user_register(request):
             username = data.get('username')
             password = data.get('password')
 
+        
+
             if not email or not username or not password:
                 return JsonResponse({'error': 'Missing required fields'}, status=400)
 
@@ -40,8 +44,7 @@ def user_register(request):
                 return JsonResponse({'error': 'Username or email already exists'}, status=400)
 
             # Create a new custom user
-            user = User.objects.create(
-                email=email, username=username, password=password)
+            user = User.objects.create(email=email,username=username, password=password)
             # Set the user's password
             user.save()  # Save the user object
 
@@ -58,15 +61,12 @@ def user_login(request):
         data = json.loads(request.body)
         username = data['username']
         password = data['password']
-        # user = authenticate(request, username=username, password=password)
-        user=User.objects.filter(username=username).exists() and User.objects.filter(password=password).exists()
-        if user:
-            # login(request, user)
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
             # Generate or retrieve an existing token for the user
-            # token, created = Token.objects.get_or_create(user=user)
-            # return JsonResponse({'message': 'Login successful', 'token': token.key , "username":username})
-            return JsonResponse({'message': 'Login successful', 'token': "login" , "username":username})
-
+            token, created = Token.objects.get_or_create(user=user)
+            return JsonResponse({'message': 'Login successful', 'token': token.key , "username":username})
         else:
             return JsonResponse({'message': 'Invalid credentials'}, status=401)
 

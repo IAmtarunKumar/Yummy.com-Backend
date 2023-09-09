@@ -11,7 +11,7 @@ urlpatterns = [
     path('community/show/', views.list_communities, name='showCommunity'),
     path('com/', views.create_community, name='postCommunity'),
     path('my_recipe/', views.showRecipe, name='recipe_get'),
-    path('recipe_create/', views.addRecipe, name='recipe_get'),
+    path('recipe_create/', views.addRecipe, name='Create_Recipe'),
 
     path('gpt/', views.chat_gpt, name='chat_gpt'),
 
