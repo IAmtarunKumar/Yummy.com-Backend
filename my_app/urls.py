@@ -17,6 +17,9 @@ urlpatterns = [
 
     path('custom_recipe/', views.custom_recipe, name='cumtom_recipe'),
 
+    path('demo/', views.demo, name='demo'),
+
+
 
 
     # path('recipe/', views.RecipeListCreateView.as_view),
