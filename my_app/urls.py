@@ -8,14 +8,14 @@ urlpatterns = [
     path('logout/', views.user_logout, name='user_logout'),
 
     path('data/', views.data, name='data'),
-    path('community/show/', views.list_communities, name='showCommunity'),
-    path('com/', views.create_community, name='postCommunity'),
-    path('my_recipe/', views.showRecipe, name='recipe_get'),
-    path('recipe_create/', views.addRecipe, name='Create_Recipe'),
+    path('community/get/', views.list_communities, name='showCommunity'),
+    path('community/post/', views.create_community, name='postCommunity'),
+    path('my_recipe/get/', views.showRecipe, name='recipe_get'),
+    path('my_recipe/post/', views.addRecipe, name='Create_Recipe'),
 
-    path('gpt/', views.chat_gpt, name='chat_gpt'),
+    path('search/', views.chat_gpt, name='chat_gpt'),
 
-    path('custom_recipe/', views.custom_recipe, name='cumtom_recipe'),
+    path('custom/', views.custom_recipe, name='cumtom_recipe'),
 
 
 
