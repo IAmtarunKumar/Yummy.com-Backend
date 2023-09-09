@@ -211,7 +211,7 @@ def custom_recipe(request):
             response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=[{ "role": "user",
-                         "content": f"Create 5 recipes in JSON format based on your preferences. You mentioned the following: - Cuisines: {cuisines} - Ingredients to avoid: {ingredients_not} - Cooking skills: {skills} - Allergies: {allergies} - Specific diets: {follow_diets} For each recipe, provide the following structure:  - 'title': 'Recipe Title'  - 'ingredients': 'Array of ingredients ' - 'instructions': 'Array of cooking instructions steps' Output the recipes in JSON format as a list of dictionaries." + " Example: [{}, {}, {}, {}, {}]"
+                         "content": f"Create 3 recipes in JSON format based on your preferences. You mentioned the following: - Cuisines: {cuisines} - Ingredients to avoid: {ingredients_not} - Cooking skills: {skills} - Allergies: {allergies} - Specific diets: {follow_diets} For each recipe, provide the following structure:  - 'title': 'Recipe Title'  - 'ingredients': 'Array of ingredients ' - 'instructions': 'Array of cooking instructions steps' Output the recipes in JSON format as a list of dictionaries." + " Example: [{}, {}, {}, {}, {}]"
  } ])
             if response.choices:
                 data=response.choices[0].message.content
